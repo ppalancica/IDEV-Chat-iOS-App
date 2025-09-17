@@ -59,6 +59,9 @@ struct LogInOrCreateAccountView: View {
                         }
                         .background(.blue)
                     }
+                    
+                    Text(loginStatusMessage)
+                        .foregroundColor(.red)
                 }
                 .padding()
             }
