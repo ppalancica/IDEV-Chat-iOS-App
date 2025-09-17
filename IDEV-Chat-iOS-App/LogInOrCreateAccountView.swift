@@ -4,15 +4,23 @@ import FirebaseAuth
 
 // https://console.firebase.google.com/u/0/
 
+final class FirebaseManager {
+    
+    public static let shared = FirebaseManager()
+    
+    public let auth: Auth
+    
+    private init() {
+        FirebaseApp.configure()
+        auth = Auth.auth()
+    }
+}
+
 struct LogInOrCreateAccountView: View {
     
     @State var isLoginMode = false
     @State var email = ""
     @State var password = ""
-    
-    init() {
-        FirebaseApp.configure()
-    }
     
     var body: some View {
         NavigationView {
@@ -81,8 +89,14 @@ struct LogInOrCreateAccountView: View {
         }
     }
     
+    //
+    // The Preview crashes if FirebaseApp.configure() is run 2+ times.
+    // We can fix it with a FirebaseManager class and a Singleton instance.
+    //
+    // Auth.auth() -> FirebaseManager.shared.auth
+    //
     private func loginUser() {
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+        FirebaseManager.shared.auth.signIn(withEmail: email, password: password) { result, error in
             if let error {
                 let loginStatusMessage = "Failed to Login user: \(error.localizedDescription)"
                 print(loginStatusMessage)
@@ -101,7 +115,7 @@ struct LogInOrCreateAccountView: View {
     @State var loginStatusMessage = ""
     
     private func createNewAccount() {
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+        FirebaseManager.shared.auth.createUser(withEmail: email, password: password) { result, error in
             if let error {
                 let loginStatusMessage = "Failed to create user: \(error.localizedDescription)"
                 print(loginStatusMessage)
