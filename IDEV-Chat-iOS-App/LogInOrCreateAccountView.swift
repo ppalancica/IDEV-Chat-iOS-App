@@ -73,10 +73,28 @@ struct LogInOrCreateAccountView: View {
     
     private func logInOrCreateAccountAction() {
         if isLoginMode {
+            loginUser()
             print("Log In")
         } else {
             createNewAccount()
             print("Create Account")
+        }
+    }
+    
+    private func loginUser() {
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if let error {
+                let loginStatusMessage = "Failed to Login user: \(error.localizedDescription)"
+                print(loginStatusMessage)
+                self.loginStatusMessage = loginStatusMessage
+                return
+            }
+            
+            if let userID = result?.user.uid {
+                let loginStatusMessage = "Successfully Logged In as user: \(userID)"
+                print(loginStatusMessage)
+                self.loginStatusMessage = loginStatusMessage
+            }
         }
     }
     
