@@ -1,6 +1,7 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import FirebaseStorage
 
 // https://console.firebase.google.com/u/0/
 
@@ -9,10 +10,12 @@ final class FirebaseManager {
     public static let shared = FirebaseManager()
     
     public let auth: Auth
+    public let storage: Storage
     
     private init() {
         FirebaseApp.configure()
         auth = Auth.auth()
+        storage = Storage.storage()
     }
 }
 
@@ -148,13 +151,46 @@ struct LogInOrCreateAccountView: View {
                 print(loginStatusMessage)
                 self.loginStatusMessage = loginStatusMessage
                 
-                self.persistImageToStorage()
+                // Must have a Billing Plan
+                // self.persistImageToStorage()
             }
         }
     }
     
+    
+    //
+    // https://console.firebase.google.com/u/0/project/idev-chat-ios-app/storage
+    //
+    // https://firebase.blog/posts/2024/11/claim-300-to-get-started
+    //
+    // https://firebase.google.com/pricing?authuser=0
+    //
     private func persistImageToStorage() {
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
         
+        guard let imageData = image?.jpegData(compressionQuality: 0.5) else { return }
+        
+        let filename = uid // UUID().uuidString
+        let ref = FirebaseManager.shared.storage.reference(withPath: filename)
+        
+        ref.putData(imageData, metadata: nil) { storageMetadata, error in
+            if let error {
+                self.loginStatusMessage = "Failed to PUT image into Firebase Storage associated with current user: \(error.localizedDescription)"
+                return
+            }
+            
+            ref.downloadURL { url, error in
+                if let error {
+                    self.loginStatusMessage = "Failed to retrieve downloadURL: \(error)"
+                    return
+                }
+                
+                if let url {
+                    self.loginStatusMessage = "Successfully stored image with url: \(url.absoluteString)"
+                    print(url.absoluteString)
+                }
+            }
+        }
     }
 }
 
