@@ -9,7 +9,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack {
+                VStack(spacing: 16) {
                     Picker(selection: $isLoginMode,
                            label: Text("Picker here")) {
                         Text("Login").tag(true)
@@ -18,18 +18,25 @@ struct ContentView: View {
                     .pickerStyle(SegmentedPickerStyle())
                     .padding(.vertical, 12)
                     
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 64))
-                            .padding()
+                    if !isLoginMode {
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 64))
+                                .padding()
+                        }
                     }
                     
                     TextField("Email", text: $email)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
+                        .padding(12)
+                        .background(.white)
+                    
                     SecureField("Password", text: $password)
+                        .padding(12)
+                        .background(.white)
                     
                     Button {
                         
@@ -46,7 +53,8 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Create Account")
+            .navigationTitle(isLoginMode ? "Log In" : "Create Account")
+            .background(Color(.init(white: 0, alpha: 0.05)).ignoresSafeArea())
         }
     }
 }
