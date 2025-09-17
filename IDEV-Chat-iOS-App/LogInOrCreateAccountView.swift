@@ -1,10 +1,17 @@
 import SwiftUI
+import FirebaseCore
+
+// https://console.firebase.google.com/u/0/
 
 struct LogInOrCreateAccountView: View {
     
     @State var isLoginMode = false
     @State var email = ""
     @State var password = ""
+    
+    init() {
+        FirebaseApp.configure()
+    }
     
     var body: some View {
         NavigationView {
