@@ -22,6 +22,8 @@ struct LogInOrCreateAccountView: View {
     @State var email = ""
     @State var password = ""
     
+    @State var shouldShowImagePicker = false
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -36,11 +38,24 @@ struct LogInOrCreateAccountView: View {
                     
                     if !isLoginMode {
                         Button {
-                            
+                            shouldShowImagePicker.toggle()
                         } label: {
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 64))
-                                .padding()
+                            VStack {
+                                if let image {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 128, height: 128)
+                                        .cornerRadius(64)
+                                } else {
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 64))
+                                        .padding()
+                                        .foregroundColor(Color(.label))
+                                }
+                            }
+                            // .border(.black, width: 3)
+                            .overlay(RoundedRectangle(cornerRadius: 64).stroke(.black, lineWidth: 3))
                         }
                     }
                     
@@ -77,7 +92,12 @@ struct LogInOrCreateAccountView: View {
             .background(Color(.init(white: 0, alpha: 0.05)).ignoresSafeArea())
         }
         // .navigationViewStyle(StackNavigationViewStyle())
+        .fullScreenCover(isPresented: $shouldShowImagePicker) {
+            ImagePicker(image: $image)
+        }
     }
+    
+    @State var image: UIImage?
     
     private func logInOrCreateAccountAction() {
         if isLoginMode {
@@ -127,8 +147,14 @@ struct LogInOrCreateAccountView: View {
                 let loginStatusMessage = "Successfully created user: \(userID)"
                 print(loginStatusMessage)
                 self.loginStatusMessage = loginStatusMessage
+                
+                self.persistImageToStorage()
             }
         }
+    }
+    
+    private func persistImageToStorage() {
+        
     }
 }
 
