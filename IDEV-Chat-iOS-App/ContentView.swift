@@ -28,24 +28,25 @@ struct ContentView: View {
                         }
                     }
                     
-                    TextField("Email", text: $email)
-                        .keyboardType(.emailAddress)
-                        .autocapitalization(.none)
-                        .padding(12)
-                        .background(.white)
-                    
-                    SecureField("Password", text: $password)
-                        .padding(12)
-                        .background(.white)
+                    Group {
+                        TextField("Email", text: $email)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                        
+                        SecureField("Password", text: $password)
+                    }
+                    .padding(12)
+                    .background(.white)
                     
                     Button {
                         
                     } label: {
                         HStack {
                             Spacer()
-                            Text("Create Account")
+                            Text(isLoginMode ? "Log In" : "Create Account")
                                 .foregroundColor(.white)
                                 .padding(.vertical, 12)
+                                .font(.system(size: 14, weight: .semibold))
                             Spacer()
                         }
                         .background(.blue)
