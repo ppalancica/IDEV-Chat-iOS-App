@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct LogInOrCreateAccountView: View {
     
     @State var isLoginMode = false
     @State var email = ""
@@ -39,7 +39,7 @@ struct ContentView: View {
                     .background(.white)
                     
                     Button {
-                        
+                        logInOrCreateAccountAction()
                     } label: {
                         HStack {
                             Spacer()
@@ -58,8 +58,16 @@ struct ContentView: View {
             .background(Color(.init(white: 0, alpha: 0.05)).ignoresSafeArea())
         }
     }
+    
+    private func logInOrCreateAccountAction() {
+        if isLoginMode {
+            print("Log In")
+        } else {
+            print("Create Account")
+        }
+    }
 }
 
 #Preview {
-    ContentView()
+    LogInOrCreateAccountView()
 }

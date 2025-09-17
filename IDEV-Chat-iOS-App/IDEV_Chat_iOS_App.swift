@@ -4,7 +4,7 @@ import SwiftUI
 struct IDEV_Chat_iOS_App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LogInOrCreateAccountView()
         }
     }
 }
