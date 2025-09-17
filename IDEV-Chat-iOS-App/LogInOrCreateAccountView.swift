@@ -1,5 +1,6 @@
 import SwiftUI
-import FirebaseCore
+import Firebase
+import FirebaseAuth
 
 // https://console.firebase.google.com/u/0/
 
@@ -64,13 +65,34 @@ struct LogInOrCreateAccountView: View {
             .navigationTitle(isLoginMode ? "Log In" : "Create Account")
             .background(Color(.init(white: 0, alpha: 0.05)).ignoresSafeArea())
         }
+        // .navigationViewStyle(StackNavigationViewStyle())
     }
     
     private func logInOrCreateAccountAction() {
         if isLoginMode {
             print("Log In")
         } else {
+            createNewAccount()
             print("Create Account")
+        }
+    }
+    
+    @State var loginStatusMessage = ""
+    
+    private func createNewAccount() {
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let error {
+                let loginStatusMessage = "Failed to create user: \(error.localizedDescription)"
+                print(loginStatusMessage)
+                self.loginStatusMessage = loginStatusMessage
+                return
+            }
+            
+            if let userID = result?.user.uid {
+                let loginStatusMessage = "Successfully created user: \(userID)"
+                print(loginStatusMessage)
+                self.loginStatusMessage = loginStatusMessage
+            }
         }
     }
 }
